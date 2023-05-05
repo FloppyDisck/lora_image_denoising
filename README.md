@@ -56,3 +56,7 @@ or
 cargo make monitor /dev/usb_path
 ```
 if you have a custom setup for the ESP32
+
+## Missing features
+* Implement Colab model in the embedded platform
+* Test model in realtime with actual images read on the field
