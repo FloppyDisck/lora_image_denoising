@@ -23,7 +23,7 @@ This will allow the autoencoder to be used with a Rust TensorFlow library, which
 To get started with this project, you can clone the repository and build the low level package. 
 The package includes instructions for building the package for both transmitters and receivers.
 
-You can also explore the Google Colab notebook, which includes code for training and testing the autoencoder on LoRa packets with added noise. 
+You can also explore the [Google Colab notebook](https://colab.research.google.com/drive/1vt_sCzEYQ-sTST441WcebbuoABKHl2XE?usp=sharing), which includes code for training and testing the autoencoder on LoRa packets with added noise. 
 The notebook provides a step-by-step guide for working with the autoencoder code.
 
 ## Building
