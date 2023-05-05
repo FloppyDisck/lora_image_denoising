@@ -1,0 +1,103 @@
+[tasks.setup_libudev]
+command = 'sudo'
+args = ['apt', 'install', 'libudev-dev']
+
+[tasks.setup_ldproxy]
+command = 'cargo'
+args = ['install', 'ldproxy']
+
+[tasks.setup_espup]
+command = 'cargo'
+args = ['install', 'espup', '--force']
+
+[tasks.espup_install]
+command = 'espup'
+args = ['install']
+
+[tasks.setup_flash]
+command = 'cargo'
+args = ['install', 'cargo-espflash', '--force']
+
+[tasks.setup_monitor]
+command = 'cargo'
+args = ['install', 'cargo-espmonitor', '--force']
+
+[tasks.setup]
+dependencies = [
+    "setup_libudev", "setup_ldproxy", "setup_espup",
+    "espup_install", "setup_flash", "setup_monitor"
+]
+
+[tasks.load_config]
+script = '. ~/export-esp.sh'
+
+[tasks.compile]
+script = '''
+set -a
+. ~/export-esp.sh
+set +a
+
+cargo build
+'''
+
+[tasks.flash]
+script = '''
+set -a
+. ~/export-esp.sh
+set +a
+
+cargo espflash --release --use-stub
+'''
+
+[tasks.flash-send]
+script = '''
+set -a
+. ~/export-esp.sh
+set +a
+
+cargo espflash --features "send" --release --use-stub
+'''
+
+[tasks.flash-send-debug]
+script = '''
+set -a
+. ~/export-esp.sh
+set +a
+
+cargo espflash --features "send" --use-stub
+'''
+
+[tasks.flash-receive]
+script = '''
+set -a
+. ~/export-esp.sh
+set +a
+
+cargo espflash --features "receive" --release --use-stub
+'''
+
+[tasks.flash-receive-debug]
+script = '''
+set -a
+. ~/export-esp.sh
+set +a
+
+cargo espflash --features "receive" --use-stub
+'''
+
+[tasks.flash-debug]
+script = '''
+set -a
+. ~/export-esp.sh
+set +a
+
+cargo espflash --use-stub
+'''
+
+[tasks.monitor]
+command = "cargo"
+args = ["espmonitor", "${@}"]
+
+[tasks.monitor-default]
+command = "cargo"
+args = ["espmonitor", "/dev/ttyACM0"]

@@ -1,0 +1,46 @@
+[package]
+name = "lora"
+version = "0.1.0"
+authors = ["Guy Garcia <guy.garcia@securesecrets.com>"]
+edition = "2021"
+resolver = "2"
+
+[package.metadata.espflash]
+partition_table = "partition-table.csv"
+
+[profile.release]
+debug = true
+opt-level = 2
+# opt-level = "s" # Use for space concerns
+
+#[profile.release.package.bevy_ecs]
+#codegen-units = 2
+#opt-level = "s"
+
+#[profile.release.package."*"]
+#codegen-units = 1 # better optimizations
+#opt-level = "z"
+
+[profile.dev]
+debug = true # Symbols are nice and they don't increase the size on Flash
+opt-level = "z"
+
+[features]
+pio = ["esp-idf-sys/pio"]
+send = []
+receive = []
+debug-data = []
+
+[dependencies]
+esp-idf-sys = { version = "0.32.1", features = ["binstart"] }
+esp-idf-svc             = "0.45.0"
+esp-idf-hal             = "0.40.1"
+embedded-svc            = "0.24.0"
+embedded-hal            = "0.2.7"
+rand = "0.8.5"
+
+anyhow = "1"
+sx127x_lora = "0.3.1"
+
+[build-dependencies]
+embuild = "0.29"
