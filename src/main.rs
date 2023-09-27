@@ -2,10 +2,12 @@ use esp_idf_hal::delay::Ets;
 use esp_idf_hal::gpio::PinDriver;
 use esp_idf_hal::prelude::*;
 use esp_idf_hal::spi::{config, Dma, SpiDeviceDriver};
+use esp_idf_hal::spi::config::DriverConfig;
 use esp_idf_sys as _; // If using the `binstart` feature of `esp-idf-sys`, always keep this module imported
 
 const FREQUENCY: i64 = 915;
 
+#[allow(dead_code)]
 const IMAGE: [u8; 784] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -59,8 +61,9 @@ fn main() -> anyhow::Result<()> {
 
     println!("Initializing SPI");
     let config = config::Config::new().baudrate(8.MHz().into());
+    let driver_config = DriverConfig::new().dma(Dma::Disabled);
     let device =
-        SpiDeviceDriver::new_single(spi, sck, miso, Some(mosi), Dma::Disabled, Some(go), &config)?;
+        SpiDeviceDriver::new_single(spi, sck, miso, Some(mosi), Some(go), &driver_config, &config)?;
 
     println!("Initializing LoRa");
     let mut lora = sx127x_lora::LoRa::new(device, cs, rts, FREQUENCY, Ets).unwrap();
@@ -72,6 +75,7 @@ fn main() -> anyhow::Result<()> {
     init_msg[1] = 2;
     init_msg[2] = 2;
 
+    #[allow(clippy::empty_loop)]
     loop {
         // Send
         #[cfg(feature = "send")]
@@ -119,7 +123,7 @@ fn main() -> anyhow::Result<()> {
             while packets_received < 3 {
                 let poll = lora.poll_irq(Some(2000)); //2 Second timeout
                 match poll {
-                    Ok(size) => {
+                    Ok(_size) => {
                         let buffer = lora.read_packet().unwrap();
                         #[cfg(feature = "debug-data")]
                         {
