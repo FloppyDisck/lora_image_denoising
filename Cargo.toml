@@ -17,6 +17,8 @@ opt-level = "z"
 
 [features]
 default = ["all", "hal", "esp-idf-sys/native"]
+send = ["default"]
+receive = ["default"]
 
 
 pio = ["esp-idf-sys/pio"]
